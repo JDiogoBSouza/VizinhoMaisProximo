@@ -129,18 +129,25 @@ public class TsplibMatrix
 		
 		int count = 0;
 		
-		for(int i = 0; i < dimension; i++)
+		if( edge_weight_format.contains("UPPER_ROW") )
 		{
-			if(i >= (dimension - parts.length) )
+			for(int i = 0; i < dimension; i++)
 			{
-				rowInt[i] = Integer.parseInt(parts[count]);
-				count++;
+				if(i >= (dimension - parts.length) )
+				{
+					rowInt[i] = Integer.parseInt(parts[count]);
+					count++;
+				}
+				else
+				{
+					rowInt[i] = INF;
+				}
+				
 			}
-			else
-			{
-				rowInt[i] = INF;
-			}
-			
+		}
+		else if( edge_weight_format.contains("LOWER_DIAG_ROW") )
+		{
+			// need implements
 		}
 		
 		//System.out.println("Linha dividida em: " + parts.length);
@@ -150,15 +157,30 @@ public class TsplibMatrix
 	
 	private void completeMatrix()
 	{
-		for(int i = 0; i < dimension; i++)
+		if( edge_weight_format.contains("UPPER_ROW") )
+		{
+			for(int i = 0; i < dimension; i++)
+			{
+				for(int j = 0; j < dimension; j++)
+				{
+					if( i < j)
+					{
+						adjacencyMatrix[j][i] = adjacencyMatrix[i][j];
+					}
+				}
+			}
+		}
+		else if(  edge_weight_format.contains("LOWER_DIAG_ROW") )	// not tested
+		{			for(int i = 0; i < dimension; i++)
 		{
 			for(int j = 0; j < dimension; j++)
 			{
-				if( i < j)
+				if( i >= j)
 				{
-					adjacencyMatrix[j][i] = adjacencyMatrix[i][j];
+					adjacencyMatrix[i][j] = adjacencyMatrix[j][i];
 				}
 			}
+		}
 		}
 	}
 

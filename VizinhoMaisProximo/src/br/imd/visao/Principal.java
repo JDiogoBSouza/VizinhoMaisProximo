@@ -100,43 +100,81 @@ public class Principal
 		
 		//popular(G);
 		
-		TsplibMatrix matrix = new TsplibMatrix("C:\\Users\\Diogo\\Desktop\\brazil58.tsp");
-		imprimir(matrix.getAdjacencyMatrix());
+		TsplibMatrix matrix = new TsplibMatrix("C:\\Users\\Diogo\\Desktop\\emandg5.tsp");	// emandg5.tsp # brazil58.tsp
+		//imprimir(matrix.getAdjacencyMatrix());
 		
 		int[][] H = matrix.getAdjacencyMatrix();
-
-		int[] caminho = new int[H[0].length];
-		int[] pesos = new int[H[0].length];
 		
-		for(int i = 0; i < caminho.length; i++)
+		int[] menorCiclo = null;
+		int pesoMenorCiclo = INF;
+		
+		for(int i = 0; i < H[0].length; i++)
 		{
-			caminho[i] = INF;
-		}
-		
-		
-		//imprimir(G);
-		
-		int verticeInicial = 1; // Seta o vertice inicial do ciclo.
-		
-		caminho[0] = verticeInicial;
-		int verticeAtual = verticeInicial;
-		
-		for(int i = 1; i < caminho.length; i++)
-		{
-			int proximoVertice = pegaMaisProximo(H[verticeAtual], caminho);
+			int verticeInicial = i; // Seta o vertice inicial do ciclo.
 			
-			if( proximoVertice != -1 )
+			int[] caminho = new int[H[0].length];
+			int[] pesos = new int[H[0].length];
+			
+			for(int j = 0; j < caminho.length; j++)
 			{
-				caminho[i] = proximoVertice;
-				verticeAtual = proximoVertice;
+				caminho[j] = INF;
+			}
+			
+			//imprimir(G);
+			
+			caminho[0] = verticeInicial;
+			int verticeAtual = verticeInicial;
+			
+			for(int j = 1; j < caminho.length; j++)
+			{
+				int proximoVertice = pegaMaisProximo(H[verticeAtual], caminho);
+				
+				if( proximoVertice != -1 )
+				{
+					caminho[j] = proximoVertice;
+					verticeAtual = proximoVertice;
+				}
+			}
+
+			System.out.println("Ciclo Hamiltoniano: ");
+			imprimir(caminho, 1);
+			System.out.println();
+			
+			int pesoCiclo = calculaPeso(caminho, H);
+			
+			if( pesoCiclo  < pesoMenorCiclo)
+			{
+				pesoMenorCiclo = pesoCiclo;
+				menorCiclo = caminho.clone();
 			}
 		}
 		
-		calculaPeso(caminho, H);
+		System.out.println();
+		System.out.println("Menor Ciclo Hamiltoniano: ");
+		imprimir(menorCiclo, 1);
+		System.out.println();
+		System.out.println("Peso do Caminho: " + pesoMenorCiclo);
 		
-		System.out.println("Ciclo Hamiltoniano: ");
-
-		imprimir(caminho, 1);
+		
+		// Only to check UPPER-ROW, LOWER-ROW and UPPER DIAG ROW...
+		
+		/*int[][] Matrix = { {1,2,3}, {1,2,3}, {1,2,3} };
+		
+		for(int i = 0; i < Matrix.length; i++)
+		{
+			for(int j = 0; j < Matrix.length; j++)
+			{
+				if( i >= j)
+				{
+					System.out.print( Matrix[i][j] + " ");
+				}
+				else
+				{
+					System.out.print("- ");
+				}
+			}
+			
+			System.out.println();
+		}*/
 	}
-
 }
