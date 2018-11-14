@@ -1,5 +1,12 @@
 package br.imd.visao;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+import br.imd.modelo.TsplibMatrix;
+
 public class Principal
 {	
 	final static int INF = Integer.MAX_VALUE;
@@ -92,9 +99,14 @@ public class Principal
 		int[][] G = { {INF,2,4,2,1}, {2,INF,3,1,5}, {4,3,INF,2,1}, {2,1,2,INF,7}, {1,5,1,7,INF} };// new int[5][5];
 		
 		//popular(G);
+		
+		TsplibMatrix matrix = new TsplibMatrix("C:\\Users\\Diogo\\Desktop\\brazil58.tsp");
+		imprimir(matrix.getAdjacencyMatrix());
+		
+		int[][] H = matrix.getAdjacencyMatrix();
 
-		int[] caminho = new int[G[0].length];
-		int[] pesos = new int[G[0].length];
+		int[] caminho = new int[H[0].length];
+		int[] pesos = new int[H[0].length];
 		
 		for(int i = 0; i < caminho.length; i++)
 		{
@@ -102,7 +114,7 @@ public class Principal
 		}
 		
 		
-		imprimir(G);
+		//imprimir(G);
 		
 		int verticeInicial = 1; // Seta o vertice inicial do ciclo.
 		
@@ -111,7 +123,7 @@ public class Principal
 		
 		for(int i = 1; i < caminho.length; i++)
 		{
-			int proximoVertice = pegaMaisProximo(G[verticeAtual], caminho);
+			int proximoVertice = pegaMaisProximo(H[verticeAtual], caminho);
 			
 			if( proximoVertice != -1 )
 			{
@@ -120,7 +132,7 @@ public class Principal
 			}
 		}
 		
-		calculaPeso(caminho, G);
+		calculaPeso(caminho, H);
 		
 		System.out.println("Ciclo Hamiltoniano: ");
 
