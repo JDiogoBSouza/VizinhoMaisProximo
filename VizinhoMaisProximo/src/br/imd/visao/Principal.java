@@ -1,11 +1,7 @@
 package br.imd.visao;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
 import br.imd.modelo.TsplibMatrix;
+import br.imd.modelo.TwoOpt;
 
 public class Principal
 {	
@@ -100,7 +96,7 @@ public class Principal
 		
 		//popular(G);
 		
-		TsplibMatrix matrix = new TsplibMatrix("C:\\Users\\Diogo\\Desktop\\emandg5.tsp");	// emandg5.tsp # brazil58.tsp
+		TsplibMatrix matrix = new TsplibMatrix("C:\\Users\\Diogo\\Desktop\\brazil58.tsp");	// emandg5.tsp # brazil58.tsp
 		//imprimir(matrix.getAdjacencyMatrix());
 		
 		int[][] H = matrix.getAdjacencyMatrix();
@@ -155,6 +151,18 @@ public class Principal
 		System.out.println();
 		System.out.println("Peso do Caminho: " + pesoMenorCiclo);
 		
+		TwoOpt twoOpt = new TwoOpt();
+		
+		int[] twoOptApplied = twoOpt.calculeBestWay(H, menorCiclo);
+
+		System.out.println();
+		System.out.println("Menor Ciclo Hamiltoniano PÓS-2OPT: ");
+		imprimir(twoOptApplied, 1);
+		
+		int peso = twoOpt.calculeSize(H, twoOptApplied);
+				
+		System.out.println();
+		System.out.println("Peso do Caminho: " + peso);
 		
 		// Only to check UPPER-ROW, LOWER-ROW and UPPER DIAG ROW...
 		
@@ -164,7 +172,7 @@ public class Principal
 		{
 			for(int j = 0; j < Matrix.length; j++)
 			{
-				if( i >= j)
+				if( i > j )
 				{
 					System.out.print( Matrix[i][j] + " ");
 				}

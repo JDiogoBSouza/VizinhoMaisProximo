@@ -171,16 +171,17 @@ public class TsplibMatrix
 			}
 		}
 		else if(  edge_weight_format.contains("LOWER_DIAG_ROW") )	// not tested
-		{			for(int i = 0; i < dimension; i++)
-		{
-			for(int j = 0; j < dimension; j++)
+		{			
+			for(int i = 0; i < dimension; i++)
 			{
-				if( i >= j)
+				for(int j = 0; j < dimension; j++)
 				{
-					adjacencyMatrix[i][j] = adjacencyMatrix[j][i];
+					if( i >= j)
+					{
+						adjacencyMatrix[i][j] = adjacencyMatrix[j][i];
+					}
 				}
 			}
-		}
 		}
 	}
 
