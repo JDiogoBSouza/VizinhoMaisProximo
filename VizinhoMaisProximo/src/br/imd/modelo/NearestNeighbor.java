@@ -73,6 +73,47 @@ public class NearestNeighbor
 		return weight;
 	}
 	
+	public int[] onePath(int[][] G)
+	{
+		return onePath(G, 0);
+	}
+	
+	public int[] onePath(int[][] G, int initial)
+	{
+		int[] path = null;
+		
+		int initialVertex = initial; // Set the start vertex of path.
+		
+		path = new int[G[0].length];
+		
+		for(int j = 0; j < path.length; j++)
+		{
+			path[j] = NearestNeighbor.INF;
+		}
+		
+		//print(G);
+		
+		path[0] = initialVertex;
+		int verticeAtual = initialVertex;
+		
+		for(int j = 1; j < path.length; j++)
+		{
+			int proximoVertice = getCloser(G[verticeAtual], path);
+			
+			if( proximoVertice != -1 )
+			{
+				path[j] = proximoVertice;
+				verticeAtual = proximoVertice;
+			}
+		}
+
+		/*System.out.println("Ciclo Hamiltoniano: ");
+		print(path, 1);
+		System.out.println();*/
+		
+		return path;
+	}
+	
 	public int[] smallerPath(int[][] G)
 	{
 		int weightSmallerPath = INF;
