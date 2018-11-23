@@ -52,7 +52,7 @@ public class TwoOpt
 	        improve ++;
 	    }
 	    
-	    System.out.println( run + " Execuções");
+	    //System.out.println( run + " Execuções");
 	    
 	    return path;
 	}
@@ -114,7 +114,7 @@ public class TwoOpt
 		
 		weight += graph[initiation][path[0]];
 		
-		System.out.println("Peso do Caminho: " + weight);
+		//System.out.println("Peso do Caminho: " + weight);
 		
 		return weight;
 	}

@@ -166,10 +166,10 @@ public class TsplibReader
 		{
 			for(int j = i+1; j < dimension; j++)
 			{
-				int xi = Integer.parseInt(data[i][0]);
-				int yi = Integer.parseInt(data[i][1]);
-				int xj = Integer.parseInt(data[j][0]);
-				int yj = Integer.parseInt(data[j][1]);
+				int xi = (int) Double.parseDouble(data[i][0]);
+				int yi = (int) Double.parseDouble(data[i][1]);
+				int xj = (int) Double.parseDouble(data[j][0]);
+				int yj = (int) Double.parseDouble(data[j][1]);
 				
 				int xd = xi - xj;
 				int yd = yi - yj;
