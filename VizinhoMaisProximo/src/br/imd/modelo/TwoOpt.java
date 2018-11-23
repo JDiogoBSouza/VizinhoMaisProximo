@@ -1,11 +1,24 @@
 package br.imd.modelo;
 
+
+
+/**
+ * The Class TwoOpt.
+ */
 public class TwoOpt
 {
-	public int[] calculeBestWay(int[][] G, int[] caminho)
+	
+	/**
+	 * This method calculates and return a smaller path in a graph by using the 2OPT strategy. 
+	 * 
+	 * @param graph the graph
+	 * @param path the path
+	 * @return the new path 
+	 */
+	public int[] calculeBestWay(int[][] graph, int[] path)
 	{
 		// Get tour size
-	    int size = caminho.length;
+	    int size = path.length;
 	 
 	    // repeat until no improvement is made 
 	    int improve = 0;
@@ -14,21 +27,21 @@ public class TwoOpt
 	 
 	    while ( improve < 20 )
 	    {
-	        int best_distance = calculeSize(G, caminho);
+	        int best_distance = calculeSize(graph, path);
 	 
 	        for ( int i = 0; i < size - 1; i++ ) 
 	        {
 	            for ( int k = i + 1; k < size; k++) 
 	            {
-	            	int[] novoCaminho = twoOptSwap( caminho, i, k );
+	            	int[] newPath = twoOptSwap( path, i, k );
 	 
-	                int new_distance = calculeSize(G, novoCaminho);
+	                int new_distance = calculeSize(graph, newPath);
 	 
 	                if ( new_distance < best_distance ) 
 	                {
 	                    // Improvement found so reset
 	                    improve = 0;
-	                    caminho = novoCaminho;
+	                    path = newPath;
 	                    best_distance = new_distance;
 	                }
 	                
@@ -41,53 +54,68 @@ public class TwoOpt
 	    
 	    System.out.println( run + " Execuções");
 	    
-	    return caminho;
+	    return path;
 	}
 	
-	public int[] twoOptSwap(int[] caminho, int i, int k)
+	/**
+	 * The method execute the exchange of positions of vertices in a path.
+	 *
+	 * @param path the path
+	 * @param i the i
+	 * @param k the k
+	 * @return the new Path
+	 */
+	public int[] twoOptSwap(int[] path, int i, int k)
 	{
-		int size = caminho.length;
+		int size = path.length;
 		
-		int[] novoCaminho = new int[size];
+		int[] newPath = new int[size];
 		
 	    // 1. take route[0] to route[i-1] and add them in order to new_route
 	    for ( int c = 0; c <= i - 1; ++c )
 	    {
-	    	novoCaminho[c] = caminho[c];
+	    	newPath[c] = path[c];
 	    }
 	     
 	    // 2. take route[i] to route[k] and add them in reverse order to new_route
 	    int dec = 0;
 	    for ( int c = i; c <= k; ++c )
 	    {
-	    	novoCaminho[c] = caminho[k - dec];
+	    	newPath[c] = path[k - dec];
 	        dec++;
 	    }
 	 
 	    // 3. take route[k+1] to end and add them in order to new_route
 	    for ( int c = k + 1; c < size; ++c )
 	    {
-	    	novoCaminho[c] = caminho[c];
+	    	newPath[c] = path[c];
 	    }
 	    
-	    return novoCaminho;
+	    return newPath;
 	}
 	
-	public int calculeSize(int[][] G, int[] caminho)
+	/**
+	 * This method Calcules and return the size of a path that was pass by parameter.
+	 *
+	 * @param graph the graph
+	 * @param path the path
+	 * @return the weight of graph
+	 */
+	public int calculeSize(int[][] graph, int[] path)
 	{
-		int inicio = caminho[0];
-		int peso = 0;
+		int initiation = path[0];
+		int weight = 0;
 		
-		for(int i = 1; i < caminho.length; i++)
+		for(int i = 1; i < path.length; i++)
 		{
-			peso += G[inicio][caminho[i]];
-			inicio = caminho[i];
+			weight += graph[initiation][path[i]];
+			initiation = path[i];
 		}
 		
-		peso += G[inicio][caminho[0]];
+		weight += graph[initiation][path[0]];
 		
-		System.out.println("Peso do Caminho: " + peso);
+		System.out.println("Peso do Caminho: " + weight);
 		
-		return peso;
+		return weight;
 	}
 }
