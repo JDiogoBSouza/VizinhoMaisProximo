@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class TsplibMatrix
+public class TsplibReader
 {
 	final static int INF = Integer.MAX_VALUE;
 	
@@ -18,13 +18,13 @@ public class TsplibMatrix
 	private String edge_weight_format;
 	private int[][] adjacencyMatrix;
 	
-	public TsplibMatrix(String path)
+	public TsplibReader(String path)
 	{
 		convertFromFile(path);
 	}
 	
 	public void convertFromFile(String path)
-	{
+	{		
 		File file = new File(path); 
 		  
 		BufferedReader br;
@@ -38,77 +38,73 @@ public class TsplibMatrix
 			try
 			{
 				int count = 0;
-				int line = 0;
 				
-				while ( (st = br.readLine() ) != null)
-				{ 
-					if(count <= 5)
+				while( count <= 5 )
+				{
+					st = br.readLine();
+					// System.out.println("Lido = " + st);
+					
+					String[] parts = st.split(": ");
+					
+					//String part1 = parts[0]; // Label
+					String part2 = parts[1]; // Value
+					
+					switch(count)
 					{
-						String[] parts = st.split(": ");
-						
-						String part1 = parts[0]; // Label
-						String part2 = parts[1]; // Value
-	
-						//System.out.println("Parte 1: " + part1 );
-						//System.out.println("Parte 2: " + part2);
-						
-						switch(count)
-						{
-							case 0:
-								this.name = part2;
-							break;
-	
-							case 1:
-								this.type = part2;
-							break;
-	
-							case 2:
-								this.comment = part2;
-							break;
-	
-							case 3:
-								this.dimension = Integer.parseInt(part2);
+						case 0:
+							this.name = part2;
+						break;
 
-								adjacencyMatrix = new int[dimension][dimension];
-							break;
-	
-							case 4:
-								this.edge_weight_type = part2;
-							break;
-	
-							case 5:
-								this.edge_weight_format = part2;
-							break;
-	
-							default:
-							break;
-						}
-					}
-					else if(count > 6 && !st.contains("EOF") )
-					{
-						adjacencyMatrix[line] = separeRows(st);
-						line++;
-						
-						/*int[][] matriz = { {1,2,3}, {1,2,3}, {1,2,3} };
-						
-						for(int i = 0; i < dimension; i++)
-						{
-							for(int j = 0; j < dimension; j++)
+						case 1:
+							this.type = part2;
+						break;
+
+						case 2:
+							this.comment = part2;
+						break;
+
+						case 3:
+							this.dimension = Integer.parseInt(part2);
+
+							adjacencyMatrix = new int[dimension][dimension];
+						break;
+
+						case 4:
+							this.edge_weight_type = part2;
+							
+							if( edge_weight_type.contains("EUC_2D") )
 							{
-								if( i < j)
-								{
-									System.out.print(matriz[i][j] + " ");
-								}
+								count = 6;
 							}
 							
-							System.out.println();
-						}*/
-					}
+						break;
 
-				    count++;
+						case 5:
+							this.edge_weight_format = part2;
+						break;
+
+						default:
+						break;
+					}
+					
+					count++;
 				}
 				
-				completeMatrix();
+				// System.out.println("Leu todo o cabeçalho");
+				
+				if( edge_weight_type.contains("EUC_2D") )
+				{
+					convertFromEuclid2d(br);
+				}
+				else if( edge_weight_type.contains("EXPLICIT") )
+				{
+					convertFromMatrix(br);
+				}
+				else
+				{
+					System.out.println("Tipo de Arquivo Invalido");
+				}
+				
 			} 
 			catch (IOException e)
 			{
@@ -119,6 +115,70 @@ public class TsplibMatrix
 		{
 			e.printStackTrace();
 		} 
+	}
+	
+	private void convertFromMatrix(BufferedReader content) throws IOException
+	{
+		String st;
+		int count = 0;
+		
+		st = content.readLine(); // Clear label that indicates start of data.
+		
+		while ( !( st = content.readLine() ).contains("EOF"))
+		{
+			//System.out.println("Leu = " + st);
+			
+			adjacencyMatrix[count] = separeRows(st);
+			
+			count++;
+		}
+
+		adjacencyMatrix[count] = separeRows(" ");
+		completeMatrix();
+	}
+	
+	private void convertFromEuclid2d(BufferedReader content) throws IOException
+	{
+		String st;
+		int count = 0;
+		String[][] lines = new String[dimension][2] ;
+		
+		st = content.readLine(); // Clear label that indicates start of data.
+		
+		while ( !( st = content.readLine() ).contains("EOF"))
+		{
+			//System.out.println("Leu = " + st);
+			
+			String[] splited = st.split(" ");
+			lines[count][0] = splited[1];
+			lines[count][1] = splited[2];
+			
+			count++;
+		}
+		
+		calculateDistances(lines);
+		completeMatrix();
+	}
+	
+	private void calculateDistances(String[][] data)
+	{
+		for(int i = 0; i < dimension; i++)
+		{
+			for(int j = i+1; j < dimension; j++)
+			{
+				int xi = Integer.parseInt(data[i][0]);
+				int yi = Integer.parseInt(data[i][1]);
+				int xj = Integer.parseInt(data[j][0]);
+				int yj = Integer.parseInt(data[j][1]);
+				
+				int xd = xi - xj;
+				int yd = yi - yj;
+				
+				int dij = (int) Math.round( Math.sqrt( (xd * xd) + (yd * yd) ) );
+				
+				adjacencyMatrix[i][j] = dij;
+			}
+		}
 	}
 	
 	private int[] separeRows(String row)
@@ -157,8 +217,8 @@ public class TsplibMatrix
 	
 	private void completeMatrix()
 	{
-		if( edge_weight_format.contains("UPPER_ROW") )
-		{
+		//if( edge_weight_format.contains("UPPER_ROW") )
+		//{
 			for(int i = 0; i < dimension; i++)
 			{
 				for(int j = 0; j < dimension; j++)
@@ -169,7 +229,7 @@ public class TsplibMatrix
 					}
 				}
 			}
-		}
+		/*}
 		else if(  edge_weight_format.contains("LOWER_DIAG_ROW") )	// not tested
 		{			
 			for(int i = 0; i < dimension; i++)
@@ -182,7 +242,7 @@ public class TsplibMatrix
 					}
 				}
 			}
-		}
+		}*/
 	}
 
 	public String getName()

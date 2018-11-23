@@ -1,6 +1,6 @@
 package br.imd.visao;
 
-import br.imd.modelo.TsplibMatrix;
+import br.imd.modelo.TsplibReader;
 import br.imd.modelo.TwoOpt;
 
 public class Principal
@@ -96,7 +96,7 @@ public class Principal
 		
 		//popular(G);
 		
-		TsplibMatrix matrix = new TsplibMatrix("C:\\Users\\Diogo\\Desktop\\brazil58.tsp");	// emandg5.tsp # brazil58.tsp
+		TsplibReader matrix = new TsplibReader("C:\\Users\\Diogo\\Desktop\\eil51.tsp");	// emandg5.tsp # brazil58.tsp # eil51.tsp
 		//imprimir(matrix.getAdjacencyMatrix());
 		
 		int[][] H = matrix.getAdjacencyMatrix();
