@@ -8,47 +8,64 @@ public class Principal
 {		
 	public static void main(String[] args)
 	{		
-		TsplibReader matrix = new TsplibReader("C:\\Users\\Diogo\\Desktop\\TspTestes\\pr439.tsp");	// emandg5.tsp # brazil58.tsp # eil51.tsp
+		TsplibReader matrix = new TsplibReader("C:\\Users\\Diogo\\Desktop\\TspTests\\novos\\pr76.tsp");	// emandg5.tsp # brazil58.tsp # eil51.tsp
 		//imprimir(matrix.getAdjacencyMatrix());
 		
 		int[][] H = matrix.getAdjacencyMatrix();
 		
 		NearestNeighbor vizinhoMaisProximo = new NearestNeighbor();
+		TwoOpt twoOpt = new TwoOpt();
 		
-		int peso = NearestNeighbor.INF;
-		int[] twoOptBest = null;
+		long vizinhoAcumulado = 0;
+		long twoOptAcumulado = 0;
 		
-		for(int i = 0; i < H[0].length; i++)
+		int weightVizinho = 0;
+		int weight2Opt = 0;
+		
+		for(int i = 0; i < 100; i++)
 		{
 			long tempoInicio = System.currentTimeMillis();
+
+			int[] menorCiclo = vizinhoMaisProximo.smallerPath(H);
 			
-			int[] menorCiclo = vizinhoMaisProximo.onePath(H, i);
+			long tempo = System.currentTimeMillis() - tempoInicio;
 			
-			System.out.println("Tempo Total Vizinho Mais Proximo: "+ (System.currentTimeMillis() - tempoInicio) + "ms");
-		
+			//System.out.println("Tempo Total Vizinho mais Proximo: "+ tempo + "ms");
+			
+			vizinhoAcumulado += tempo;
+
+			weightVizinho = twoOpt.calculeSize(H, menorCiclo);
 			//vizinhoMaisProximo.print(menorCiclo, 1);
+			/*System.out.println();
+			System.out.println("Peso do Caminho: " + weight);
+			System.out.println();
+			System.out.println();*/
 			
-			TwoOpt twoOpt = new TwoOpt();
+			/*tempoInicio = System.currentTimeMillis();
+			int[] twoOptApplied = twoOpt.calculeBestWay(H, menorCiclo);
+			System.out.println("Tempo Total 2-OPT: "+ (System.currentTimeMillis() - tempoInicio) + "ms");*/
 
 			tempoInicio = System.currentTimeMillis();
+			
 			int[] twoOptApplied = twoOpt.calculeBestWay(H, menorCiclo);
-			System.out.println("Tempo Total 2-OPT: "+ (System.currentTimeMillis() - tempoInicio) + "ms");
-	
+
+			tempo = System.currentTimeMillis() - tempoInicio;
+			//System.out.println("Tempo Total 2-OPT: "+ tempo + "ms");
+			twoOptAcumulado += tempo;
 			
-			int weight = twoOpt.calculeSize(H, twoOptApplied);
-			
-			if(weight < peso)
-			{
-				peso = weight;
-				twoOptBest = twoOptApplied.clone();
-			}
-			
+			weight2Opt = twoOpt.calculeSize(H, twoOptApplied);
+
+			//vizinhoMaisProximo.print(twoOptApplied, 1);
+			//System.out.println();
+			//System.out.println("Peso do Caminho: " + weight);
 		}
 
-		System.out.println("Menor Ciclo Hamiltoniano PÓS-2OPT: ");
-		vizinhoMaisProximo.print(twoOptBest, 1);
-		System.out.println();
-		System.out.println("Peso do Caminho: " + peso);
+		System.out.print("Tempo médio Vizinho mais Proximo: ");
+		System.out.println(vizinhoAcumulado/100 + "ms");
+		System.out.println("Peso: " + weightVizinho);
 		
+		System.out.print("Tempo médio 2-OPT: ");
+		System.out.println(twoOptAcumulado/100 + "ms");
+		System.out.println("Peso: " + weight2Opt);
 	}
 }

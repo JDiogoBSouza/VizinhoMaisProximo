@@ -80,36 +80,26 @@ public class NearestNeighbor
 	
 	public int[] onePath(int[][] G, int initial)
 	{
-		int[] path = null;
-		
-		int initialVertex = initial; // Set the start vertex of path.
-		
-		path = new int[G[0].length];
-		
+		int[] path = new int[G[0].length];
+				
 		for(int j = 0; j < path.length; j++)
 		{
 			path[j] = NearestNeighbor.INF;
 		}
 		
-		//print(G);
-		
-		path[0] = initialVertex;
-		int verticeAtual = initialVertex;
+		path[0] = initial;
+		int actualVertex = initial;
 		
 		for(int j = 1; j < path.length; j++)
 		{
-			int proximoVertice = getCloser(G[verticeAtual], path);
+			int nextVertex = getCloser(G[actualVertex], path);
 			
-			if( proximoVertice != -1 )
+			if( nextVertex != -1 )
 			{
-				path[j] = proximoVertice;
-				verticeAtual = proximoVertice;
+				path[j] = nextVertex;
+				actualVertex = nextVertex;
 			}
 		}
-
-		/*System.out.println("Ciclo Hamiltoniano: ");
-		print(path, 1);
-		System.out.println();*/
 		
 		return path;
 	}
@@ -120,35 +110,8 @@ public class NearestNeighbor
 		int[] smallerPath = new int[G[0].length];
 		
 		for(int i = 0; i < G[0].length; i++)
-		{
-			int initialVertex = i; // Set the start vertex of path.
-			
-			int[] path = new int[G[0].length];
-			
-			for(int j = 0; j < path.length; j++)
-			{
-				path[j] = NearestNeighbor.INF;
-			}
-			
-			//print(G);
-			
-			path[0] = initialVertex;
-			int verticeAtual = initialVertex;
-			
-			for(int j = 1; j < path.length; j++)
-			{
-				int proximoVertice = getCloser(G[verticeAtual], path);
-				
-				if( proximoVertice != -1 )
-				{
-					path[j] = proximoVertice;
-					verticeAtual = proximoVertice;
-				}
-			}
-
-			/*System.out.println("Ciclo Hamiltoniano: ");
-			print(path, 1);
-			System.out.println();*/
+		{			
+			int[] path = onePath(G, i);
 			
 			int weightPath = calculateWeight(path, G);
 			
